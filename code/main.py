@@ -75,6 +75,11 @@ class Main:
 						platform.rect.bottom = border.top
 						platform.pos.y = platform.rect.y
 						platform.direction.y = -1
+			if platform.rect.colliderect(self.player.rect) and self.player.rect.centery > platform.rect.centery:
+				platform.rect.bottom = self.player.rect.top
+				platform.pos.y = platform.rect.y
+				platform.direction.y = -1
+
 
 	def run(self):
 		while True:

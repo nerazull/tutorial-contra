@@ -28,6 +28,7 @@ class Player(pygame.sprite.Sprite):
 		self.jump_speed = 1400
 		self.on_floor = False
 		self.duck = False
+		self.moving_floor = None
 
 	def get_status(self):
 		# idle
@@ -49,6 +50,8 @@ class Player(pygame.sprite.Sprite):
 			if sprite.rect.colliderect(bottom_rect):
 				if self.direction.y > 0:
 					self.on_floor = True
+				if hasattr(sprite,'direction'):
+					self.moving_floor = sprite
 
 	def import_assets(self,path):
 		self.animations = {}
@@ -128,12 +131,20 @@ class Player(pygame.sprite.Sprite):
 		self.rect.x = round(self.pos.x)
 		self.collision('horizontal')
 		
-
 		# vertical movement + collision
 		self.direction.y += self.gravity
 		self.pos.y += self.direction.y * dt
+
+		# glue the player to the platform
+		if self.moving_floor and self.moving_floor.direction.y > 0 and self.direction.y > 0:
+			self.direction.y = 0
+			self.rect.bottom = self.moving_floor.rect.top
+			self.pos.y = self.rect.y
+			self.on_floor = True
+
 		self.rect.y = round(self.pos.y)
 		self.collision('vertical')
+		self.moving_floor = None
 		
 	def update(self,dt):
 		self.old_rect = self.rect.copy()
