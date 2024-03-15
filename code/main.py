@@ -6,6 +6,7 @@ from player import Player
 from pygame.math import Vector2 as vector
 from bullet import Bullet, FireAnimation
 from enemy import Enemy
+from overlay import Overlay
 
 class AllSprites(pygame.sprite.Group):
 	def __init__(self):
@@ -56,6 +57,7 @@ class Main:
 		self.vulnerable_sprites = pygame.sprite.Group()
 
 		self.setup()
+		self.overlay = Overlay(self.player)
 
 		# bullet images
 		self.bullet_surf = pygame.image.load('../graphics/bullet.png').convert_alpha()
@@ -146,6 +148,7 @@ class Main:
 			self.all_sprites.update(dt)
 			self.bullet_collisions()
 			self.all_sprites.custom_draw(self.player)
+			self.overlay.display()
 
 			pygame.display.update()
 
