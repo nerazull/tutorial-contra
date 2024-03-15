@@ -12,12 +12,27 @@ class AllSprites(pygame.sprite.Group):
 		self.display_surface = pygame.display.get_surface()
 		self.offset = vector()
 
+		# import
+		self.fg_sky = pygame.image.load('../graphics/sky/fg_sky.png').convert_alpha()
+		self.bg_sky = pygame.image.load('../graphics/sky/bg_sky.png').convert_alpha()
+		tmx_map = load_pygame('../data/map.tmx')
+
+		# dimensions
+		self.padding = WINDOW_WIDTH / 2
+		self.sky_width = self.bg_sky.get_width()
+		map_width = tmx_map.tilewidth * tmx_map.width + (2 * self.padding)
+		self.sky_num = int(map_width // self.sky_width)
+
 	def custom_draw(self,player):
 
-		# exercise
 		# change the offset vector
 		self.offset.x = player.rect.centerx - WINDOW_WIDTH / 2
 		self.offset.y = player.rect.centery - WINDOW_HEIGHT / 2
+
+		for x in range(self.sky_num):
+			x_pos = -self.padding + (x * self.sky_width)
+			self.display_surface.blit(self.bg_sky,(x_pos - self.offset.x / 2.5, 850 - self.offset.y / 2.5))
+			self.display_surface.blit(self.fg_sky,(x_pos - self.offset.x / 2, 800 - self.offset.y / 2))
 
 		# blit all sprites
 		for sprite in sorted(self.sprites(), key = lambda sprite: sprite.z):
