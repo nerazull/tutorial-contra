@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 from settings import *
 from pygame.math import Vector2 as vector
 from entity import Entity
@@ -15,6 +15,8 @@ class Player(Entity):
 		self.jump_speed = 1400
 		self.on_floor = False
 		self.moving_floor = None
+
+		self.health = 10
 
 	def get_status(self):
 		# idle
@@ -119,6 +121,12 @@ class Player(Entity):
 		self.rect.y = round(self.pos.y)
 		self.collision('vertical')
 		self.moving_floor = None
+
+	def check_death(self):
+		if self.health <= 0:
+			pygame.quit()
+			sys.exit()
+
 		
 	def update(self,dt):
 		self.old_rect = self.rect.copy()
@@ -126,7 +134,13 @@ class Player(Entity):
 		self.get_status()
 		self.move(dt)
 		self.check_contact()
+
 		self.animate(dt)
+		self.blink()
 
 		# timer
 		self.shoot_timer()
+		self.invul_timer()
+
+		# death
+		self.check_death()

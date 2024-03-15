@@ -53,6 +53,7 @@ class Main:
 		self.collision_sprites = pygame.sprite.Group()
 		self.platform_sprites = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
+		self.vulnerable_sprites = pygame.sprite.Group()
 
 		self.setup()
 
@@ -77,11 +78,20 @@ class Main:
 		# objects
 		for obj in tmx_map.get_layer_by_name('Entities'):
 			if obj.name == 'Player':
-				self.player = Player((obj.x,obj.y), self.all_sprites, '../graphics/player', self.collision_sprites, self.shoot)
-
+				self.player = Player(
+					pos = (obj.x,obj.y), 
+					groups = [self.all_sprites, self.vulnerable_sprites], 
+					path = '../graphics/player', 
+					collision_sprites = self.collision_sprites, 
+					shoot = self.shoot)
 			if obj.name == 'Enemy':
-				# exercise: create the enemies
-				Enemy((obj.x,obj.y), '../graphics/enemy', self.all_sprites, self.shoot, self.player, self.collision_sprites)
+				Enemy(
+					pos = (obj.x,obj.y), 
+					path = '../graphics/enemy', 
+					groups = [self.all_sprites, self.vulnerable_sprites], 
+					shoot = self.shoot, 
+					player = self.player, 
+					collision_sprites = self.collision_sprites)
 
 		self.platform_border_rects = []
 		for obj in tmx_map.get_layer_by_name('Platforms'):
@@ -114,6 +124,9 @@ class Main:
 			pygame.sprite.spritecollide(obstacle,self.bullet_sprites,True)
 
 		# entities
+		for sprite in self.vulnerable_sprites.sprites():
+			if pygame.sprite.spritecollide(sprite, self.bullet_sprites, True, pygame.sprite.collide_mask):
+				sprite.damage()
 
 	def shoot(self, pos, direction, entity):
 		Bullet(pos, self.bullet_surf, direction, [self.all_sprites, self.bullet_sprites])
