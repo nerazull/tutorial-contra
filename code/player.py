@@ -70,6 +70,7 @@ class Player(Entity):
 
 			self.can_shoot = False
 			self.shoot_time = pygame.time.get_ticks()
+			self.shoot_sound.play()
 
 	def collision(self, direction):
 		for sprite in self.collision_sprites.sprites():

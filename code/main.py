@@ -56,7 +56,7 @@ class Main:
 		self.bullet_sprites = pygame.sprite.Group()
 		self.vulnerable_sprites = pygame.sprite.Group()
 
-		self.setup()
+		self.setup() 
 		self.overlay = Overlay(self.player)
 
 		# bullet images
@@ -64,6 +64,10 @@ class Main:
 		self.fire_surfs = [
 			pygame.image.load('../graphics/fire/0.png').convert_alpha(),
 			pygame.image.load('../graphics/fire/1.png').convert_alpha()]
+
+		# music
+		self.music = pygame.mixer.Sound('../audio/music.wav')
+		self.music.play(loops = -1)
 
 	def setup(self):
 		tmx_map = load_pygame('../data/map.tmx')
